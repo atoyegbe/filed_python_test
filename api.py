@@ -1,49 +1,9 @@
-from flask import Flask, request, jsonify, abort 
-from flask_sqlalchemy import SQLAlchemy 
-from flask_marshmallow import Marshmallow
-from flask_migrate import Migrate
-import os 
+from core import app 
+from flask import request, jsonify, abort 
 
-
-
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
-migrate = Migrate(app, db)
-ma = Marshmallow(app)
-
-
-########################################
 from models import Audiobook, Podcast, Song
+from models import audiobook_schema, audiobooks_schema, song_schema, songs_schema, podcast_schema, podcasts_schema
 
-
-class SongSchema(ma.Schema):
-    class Meta:
-        fields = ('id', 'title', 'duration')
-
-
-class PodcastSchema(ma.Schema):
-    class Meta:
-        fields = ('id', 'title', 'duration', 'host', 'participants')
-
-
-
-class AudibookSchema(ma.Schema):
-    class Meta:
-        fields = ('id', 'title', 'author' , 'narrator', 'duration')
-
-song_schema = SongSchema()
-songs_schema = SongSchema(many=True)
-
-podcast_schema = PodcastSchema()
-podcasts_schema = PodcastSchema(many=True)
-
-audiobook_schema = AudibookSchema()
-audiobooks_schema = AudibookSchema(many=True)
-
-
-##################################################
 
 @app.route('/<audioFileType>', methods= ['POST'])
 def add_audio(audioFileType):
@@ -72,6 +32,7 @@ def add_audio(audioFileType):
             return song_schema.jsonify(new_song), 200
 
 
+##
 @app.route('/<audioFileType>/<audioFileID>', methods=['GET'])
 def get_audio(audioFileType, audioFileID):
 
@@ -188,13 +149,4 @@ def delete_audio(audioFileType, audioFileID):
         return audiobook_schema.jsonify(audiobook), 200 
     else:
         return {"message": f"{audioFileType} is not available." }
-# Initailizing Schema 
 
-
-
-
-
-# Run a server.
-
-if __name__ == '__main__':
-    app.run(debug=True)

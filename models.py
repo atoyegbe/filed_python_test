@@ -1,11 +1,21 @@
-from app import db 
+from core import app 
+
+from flask_sqlalchemy import SQLAlchemy
+from flask_marshmallow import Marshmallow
+from flask_migrate import Migrate
+
+
+
+
+db = SQLAlchemy(app)
+migrate = Migrate(app, db)
+ma = Marshmallow(app)
+
+
 from sqlalchemy.dialects.postgresql import JSON
 from sqlalchemy import DateTime
 from datetime import datetime 
 from sqlalchemy.types import ARRAY, String
-
-
-
 
 class Audio(db.Model):
     __abstract__ = True 
@@ -93,5 +103,31 @@ class Audiobook(Audio):
         db.session.commit()
 
 
+class SongSchema(ma.Schema):
+    class Meta:
+        fields = ('id', 'title', 'duration')
 
 
+class PodcastSchema(ma.Schema):
+    class Meta:
+        fields = ('id', 'title', 'duration', 'host', 'participants')
+
+
+
+class AudibookSchema(ma.Schema):
+    class Meta:
+        fields = ('id', 'title', 'author' , 'narrator', 'duration')
+
+song_schema = SongSchema()
+songs_schema = SongSchema(many=True)
+
+podcast_schema = PodcastSchema()
+podcasts_schema = PodcastSchema(many=True)
+
+audiobook_schema = AudibookSchema()
+audiobooks_schema = AudibookSchema(many=True)
+
+
+
+if __name__ == "__main__":
+    db.create_all()

@@ -3,8 +3,8 @@ import unittest
 import json
 # from unittest import result
 
-from app import app, db 
-
+from core import app
+from models import db  
 
 class TestCase(unittest.TestCase):
     def setUp(self):
@@ -14,6 +14,7 @@ class TestCase(unittest.TestCase):
         db.create_all()
 
     def test_add_song(self):
+        """ Test API can add a new song  """
         song_payload = {
             "title": "Hold on",
             "duration": 240
@@ -23,6 +24,7 @@ class TestCase(unittest.TestCase):
 
     
     def test_get_song(self):
+        """ Test API to retrieve a song """
         song_payload = {
             "title": "Hold on",
             "duration": 240
@@ -35,6 +37,7 @@ class TestCase(unittest.TestCase):
         self.assertIn("Hold on", str(response.data))
 
     def test_update_song(self):
+        """ Test API to update a song """
         song_post_payload = {
             "title": "Hold on",
             "duration": 240
@@ -73,6 +76,7 @@ class TestCase(unittest.TestCase):
         
 
     def test_add_podcast(self):
+        """ Test API to add a new podcast """
         podcast_payload = {
             "title": "TDD in Python",
             "duration": 333,
@@ -85,6 +89,7 @@ class TestCase(unittest.TestCase):
         self.assertIn("TDD", str(res.data))
     
     def test_get_podcast(self):
+        """Test API to retrieve a podcast"""
         podcast_payload = {
             "title": "TDD in Python",
             "duration": 333,
@@ -99,6 +104,7 @@ class TestCase(unittest.TestCase):
         self.assertIn("TDD", str(res.data))
 
     def test_get_all_podcast(self):
+        """ Test API to add a new podcast """
         podcast_one_payload = {
             "title":"TDD in Python",
             "duration": 333,
